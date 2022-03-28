@@ -18,15 +18,16 @@ class User:
         self.password = password
         self.messages = []
         self.friends = []   
-
-User1 = User("admin","password")
-userinfo.append(User1)  
+ 
 
 @app.route('/friend',methods=["POST"])
 def user_friend():
     respkey = {}
     givenuser = request.get_json()
     if "username" not in givenuser or "loggedInUser" not in givenuser:
+        respkey["success"] = "false"
+        return jsonify(respkey)
+    if givenuser["username"] == givenuser["loggedInUser"]:
         respkey["success"] = "false"
         return jsonify(respkey)
     for x in userinfo:
@@ -47,24 +48,56 @@ def user_friend():
                     return jsonify(respkey)
     respkey["success"] = "false"
     return jsonify(respkey)
-    
-@app.route('/send',methods=["POST"])
-def user_message(): 
+
+@app.route('/message',methods=["POST"])
+def get_message(): 
     respkey = {}
+    count = 0
     givenuser = request.get_json()
     if "username" not in givenuser or "loggedInUser" not in givenuser:
         respkey["success"] = "false"
         return jsonify(respkey)
     for x in userinfo:
         if givenuser["username"] == x.username:
-            for y in userinfo:
-                if givenuser["loggedInUser"] == y.username:
-                    y.friends.append(x)
-                    y.messages.append([])
-                    x.messages.append([])
-                    x.friends.append(y)
-                    respkey["success"] = "true"
-                    return jsonify(respkey)
+            for y in x.friends:
+                if y.username == givenuser["loggedInUser"]:
+                    count = 1
+    if count == 1:
+        for x in userinfo:
+            if givenuser["username"] == x.username:
+                for y in userinfo:
+                    if givenuser["loggedInUser"] == y.username:
+                        respkey["success"] = "true"
+                        respkey["messages"] = y.messages
+                        return jsonify(respkey)
+    respkey["success"] = "false"
+    return jsonify(respkey)
+    
+@app.route('/send',methods=["POST"])
+def user_message(): 
+    respkey = {}
+    givenuser = request.get_json()
+    count = 0
+    flag = 0
+    if "username" not in givenuser or "loggedInUser" not in givenuser or "message" not in givenuser:
+        respkey["success"] = "false"
+        return jsonify(respkey)
+    for x in userinfo:
+        if givenuser["username"] == x.username:
+            for y in x.friends:
+                if y.username == givenuser["loggedInUser"]:
+                    flag = 1
+    if flag == 1:
+        for x in userinfo:
+            if givenuser["username"] == x.username:
+                for y in userinfo:
+                    if givenuser["loggedInUser"] == y.username:
+                        NewMessage = Message(givenuser["loggedInUser"], givenuser["message"])
+                        y.messages[count].append(NewMessage)
+                        x.messages[count].append(NewMessage)
+                        respkey["success"] = "true"
+                        return jsonify(respkey)
+                    count += 1
     respkey["success"] = "false"
     return jsonify(respkey)
     
@@ -100,7 +133,3 @@ def user_create():
     userinfo.append(User1)
     y["success"] = "true"
     return jsonify(y)
-    
-
-if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=8080)
