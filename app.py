@@ -19,6 +19,7 @@ class User:
         self.messages = []
         self.friends = []   
  
+
 @app.route('/friend',methods=["POST"])
 def user_friend():
     respkey = {}
@@ -132,3 +133,7 @@ def user_create():
     userinfo.append(User1)
     y["success"] = "true"
     return jsonify(y)
+    
+
+if __name__ == '__main__':
+	app.run(host='0.0.0.0', port=8080)
