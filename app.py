@@ -19,7 +19,6 @@ class User:
         self.messages = []
         self.friends = []   
  
-
 @app.route('/friend',methods=["POST"])
 def user_friend():
     respkey = {}
