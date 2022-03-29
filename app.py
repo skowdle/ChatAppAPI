@@ -72,6 +72,23 @@ def get_message():
                         return jsonify(respkey)
     respkey["success"] = "false"
     return jsonify(respkey)
+
+@app.route('/check',methods=["POST"])
+def check_friend():
+    respkey = {}
+    count = 0
+    givenuser = request.get_json()
+    if "username" not in givenuser or "loggedInUser" not in givenuser:
+        respkey["success"] = "false"
+        return jsonify(respkey)
+    for x in userinfo:
+        if givenuser["username"] == x.username:
+            for y in x.friends:
+                if y.username == givenuser["loggedInUser"]: 
+                    respkey["success"] = "true"
+                    return jsonify(respkey)
+    respkey["success"] = "false"
+    return jsonify(respkey)
     
 @app.route('/send',methods=["POST"])
 def user_message(): 
