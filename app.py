@@ -59,13 +59,15 @@ def get_message():
                 if y.username == givenuser["loggedInUser"]:
                     count = 1
     if count == 1:
+        count = 0
         for x in userinfo:
             if givenuser["username"] == x.username:
-                for y in userinfo:
+                for y in x.friends:
                     if givenuser["loggedInUser"] == y.username:
                         respkey["success"] = "true"
-                        respkey["messages"] = y.messages
+                        respkey["messages"] = y.messages[count]
                         return jsonify(respkey)
+                    count += 1
     respkey["success"] = "false"
     return jsonify(respkey)
 
