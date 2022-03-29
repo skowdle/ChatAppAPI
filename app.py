@@ -7,10 +7,6 @@ app = Flask (__name__)
 userinfo = []
 keyinfo = {}
 
-class Message:
-    def __init__(self,user,msg):
-        self.user = user
-        self.msg = msg
         
 class User:
     def __init__(self,username,password):
@@ -109,7 +105,10 @@ def user_message():
             if givenuser["username"] == x.username:
                 for y in userinfo:
                     if givenuser["loggedInUser"] == y.username:
-                        NewMessage = Message(givenuser["loggedInUser"], givenuser["message"])
+                        NewMessage = {
+                                    "user" : givenuser["loggedInUser"],
+                                    "msg" : givenuser["message"]
+                               }
                         y.messages[count].append(NewMessage)
                         x.messages[count].append(NewMessage)
                         respkey["success"] = "true"
