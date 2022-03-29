@@ -103,7 +103,7 @@ def user_message():
     if flag == 1:
         for x in userinfo:
             if givenuser["username"] == x.username:
-                for y in userinfo:
+                for y in x.friends:
                     if givenuser["loggedInUser"] == y.username:
                         NewMessage = {
                                     "user" : givenuser["loggedInUser"],
